@@ -1,0 +1,49 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment
+.env
+.env.local
+.env.*.local
+.env.test
+
+# Build
+dist/
+build/
+.tsc-out/
+
+# Database
+prisma/dev.db
+prisma/dev.db-journal
+*.sqlite
+*.sqlite3
+
+# IDE
+.idea/
+.vscode/
+.DS_Store
+*.swp
+*.swo
+*~
+.vscode/
+
+# Test coverage
+coverage/
+.nyc_output/
+.vitest/
+
+# Logs
+logs/
+*.log
+
+# Temp files
+.tmp/
+.env.test.local
+
+# OS
+Thumbs.db
+.DS_Store

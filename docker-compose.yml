@@ -1,0 +1,60 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: college-postgres
+    environment:
+      POSTGRES_DB: college_management_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - college-network
+
+  api:
+    build: .
+    container_name: college-api
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: sh -c "npm run prisma:migrate && npm run db:seed && npm run dev"
+    environment:
+      DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/college_management_db?schema=public"
+    networks:
+      - college-network
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: college-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - college-network
+
+volumes:
+  postgres_data:
+
+networks:
+  college-network:
+    driver: bridge
